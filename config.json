@@ -4,13 +4,13 @@
             "name": "Backup of 1st folder",
             "source_folder": "test/folder_1",
             "dest_bucket": "backup-1",
-            "retention_policy": ""
+            "retention_policy_days": "0"
         },
         {
             "name": "Backup of 2nd folder",
             "source_folder": "test/folder_2",
             "dest_bucket": "backup-2",
-            "retention_policy": ""
+            "retention_policy_days": "0"
         }
     ]
 }
