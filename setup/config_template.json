@@ -1,0 +1,12 @@
+{
+    "config": {
+        "s3": {
+            "region": "GRA",
+            "endpoint": "https://s3.gra.io.cloud.ovh.net/",
+            "username": "user-XXXXX",
+            "access_key": "xxxxxxxxxxxxx",
+            "secret_key": "xxxxxxxxxxxxx"
+        },
+        "other": "other_test"
+    }
+}
