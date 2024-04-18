@@ -5,6 +5,10 @@ sudo apt install awscli python3 python3-pip jq -y -q
 python3 -m pip install -r requirements.txt --break-system-packages
 
 echo "Configuring awscli (s3)"
+mkdir ~/.aws/
+touch ~/.aws/credentials
+touch ~/.aws/config
+
 printf "
 [default]
 aws_access_key_id = $(cat config.json | jq -r .config.s3.access_key)
