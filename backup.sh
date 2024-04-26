@@ -37,7 +37,7 @@ do
     aws s3 cp $archive_name s3://$dest_bucket --quiet
     aws s3 cp $log_file_name s3://$dest_bucket --quiet
     
-    rm -rf $archive_name
-    rm -rf $log_file_name
+    rm -rf "$archive_name"
+    rm -rf "$log_file_name"
 
 done
