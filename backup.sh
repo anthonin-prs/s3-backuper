@@ -32,7 +32,7 @@ do
     echo "Running '$name' backup: $source_folder => s3://$dest_bucket" | tee -a $log_file_name
 
     echo "  - Compressing $source_folder to $archive_name" | tee -a $log_file_name
-    tar -czf $archive_name $source_folder
+    sudo tar -czf $archive_name $source_folder
     echo "  - Uploading $archive_name to s3://$dest_bucket" | tee -a $log_file_name
     aws s3 cp $archive_name s3://$dest_bucket --quiet
     aws s3 cp $log_file_name s3://$dest_bucket --quiet
