@@ -3,6 +3,8 @@
 
 conf_file=$@
 
+PATH=$PATH:/usr/local/bin/
+
 jq -r -c .backups[] $conf_file | while read host
 do
     name=$(echo $host | jq -r -c .name)
@@ -34,9 +36,9 @@ do
     echo "  - Compressing $source_folder to $archive_name" | tee -a $log_file_name
     sudo tar -c --use-compress-program=pigz -f $archive_name $source_folder
     echo "  - Uploading $archive_name to s3://$dest_bucket" | tee -a $log_file_name
-    aws s3 cp $archive_name s3://$dest_bucket --quiet
-    aws s3 cp $log_file_name s3://$dest_bucket --quiet
-    
+    aws s3 cp $archive_name s3://$dest_bucket
+    aws s3 cp $log_file_name s3://$dest_bucket
+
     rm -rf "$archive_name"
     rm -rf "$log_file_name"
 
