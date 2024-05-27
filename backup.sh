@@ -5,12 +5,13 @@ conf_file=$@
 
 PATH=$PATH:/usr/local/bin/
 
-jq -r -c .backups[] $conf_file | while read host
+jq -r -c .backups[] $conf_file | while read backup_task
 do
-    name=$(echo $host | jq -r -c .name)
-    source_folder=$(echo $host | jq -r -c .source_folder)
-    dest_bucket=$(echo $host | jq -r -c .dest_bucket)
-    retention_days=$(echo $host | jq -r -c .retention_days)
+    name=$(echo $backup_task | jq -r -c .name)
+    source_folder=$(echo $backup_task | jq -r -c .source_folder)
+    dest_bucket=$(echo $backup_task | jq -r -c .dest_bucket)
+    retention_days=$(echo $backup_task | jq -r -c .retention_days)
+    exclusions=$(echo $backup_task | jq  -c .excluded[])
     folder_name=$(echo $source_folder | rev  | cut -d '/' -f 1 | rev)
     archive_name="$folder_name-$(date +%Y_%m_%d).tar.gz"
     log_file_name="$folder_name-$(date +%Y_%m_%d).log"
@@ -34,7 +35,14 @@ do
     echo "Running '$name' backup: $source_folder => s3://$dest_bucket" | tee -a $log_file_name
 
     echo "  - Compressing $source_folder to $archive_name" | tee -a $log_file_name
-    sudo tar -c --use-compress-program=pigz -f $archive_name $source_folder
+    exclusion_args=""
+    for exclusion in $exclusions
+    do
+        exclusion_args=$exclusion_args" --exclude=$exclusion"
+    done
+    command="sudo tar"$exclusion_args" -c --use-compress-program=pigz -f $archive_name $source_folder"
+    command="sudo tar"$exclusion_args" -czf $archive_name $source_folder"
+    eval $command
     echo "  - Uploading $archive_name to s3://$dest_bucket" | tee -a $log_file_name
     aws s3 cp $archive_name s3://$dest_bucket
     aws s3 cp $log_file_name s3://$dest_bucket
